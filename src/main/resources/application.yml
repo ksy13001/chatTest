@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/chatTest?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: "@@hsm1300@@"
+
+  jpa:
+    hibernate:
+      # 엔티티로 등록된 클래스와 매핑되는 클래스 자동 생성, 어플리케이션 실행 시점에 테이블 다지우고 다시생성
+      ddl-auto: create
+
+    properties:
+      hibernate:
+        #show_sql: true
+        format_sql: true
+        # 필드이름이 데이터베이스 예약어랑 같아서 테이블 생성이 안될 때 해결 -> ``(틸드)로 테이블과 컬럼을 감싸줘서 중복 방지
+        globally_quoted_identifiers: true
+logging:
+  level:
+    # hibernate 가 생성하는 sql 로거로 출력(show_sql 은 SYSTEM.out으로 함)
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
