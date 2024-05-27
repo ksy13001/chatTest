@@ -5,16 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
+/**
+ *  ChatRoom 생성시 response dto
+ * */
+
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CreateChatRoomResponseDto {
+public class CreateChatRoomResponseDto  {
     private Long id;
-    private String name;
-
-    @Builder
-    public CreateChatRoomResponseDto(Long id, String name){
-        this.id = id;
-        this.name = name;
-    }
-
 }
