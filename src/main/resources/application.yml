@@ -3,7 +3,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/chatTest?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
-    password: "@@hsm1300@@"
+    password: 
 
   jpa:
     hibernate:
@@ -18,6 +18,5 @@ spring:
         globally_quoted_identifiers: true
 logging:
   level:
-    # hibernate 가 생성하는 sql 로거로 출력(show_sql 은 SYSTEM.out으로 함)
     org.hibernate.SQL: debug
     org.hibernate.orm.jdbc.bind: trace
