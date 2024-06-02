@@ -1,15 +1,18 @@
 package com.example.chatTest.domain;
 
+import com.example.chatTest.dto.MessageDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Message {
+public class Message extends BaseTimeEntity{
 
     @Id @GeneratedValue
     private Long id;
@@ -20,10 +23,5 @@ public class Message {
 
     private String content;
 
-    @Builder
-    public Message(String content, UserChatRoom userChatRoom){
-        this.content = content;
-        this.userChatRoom = userChatRoom;
-        userChatRoom.getMessages().add(this);
-    }
+    private MessageType messageType;
 }
