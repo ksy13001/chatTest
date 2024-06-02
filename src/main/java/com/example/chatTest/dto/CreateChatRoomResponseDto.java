@@ -14,5 +14,10 @@ import java.util.Date;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateChatRoomResponseDto  {
-    private Long id;
+    private Long chatRoomId;
+
+    @Builder
+    public CreateChatRoomResponseDto(Long chatRoomId){
+        this.chatRoomId = chatRoomId;
+    }
 }
