@@ -1,9 +1,7 @@
 package com.example.chatTest.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.chatTest.domain.ChatRoom;
+import lombok.*;
 
 import java.util.Date;
 
@@ -20,7 +18,6 @@ import java.util.Date;
  * 	    },
  * */
 @Data
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoomListResponseDto {
 
     private Long chatRoomId;
@@ -31,17 +28,23 @@ public class ChatRoomListResponseDto {
     private  String lastMessage;
     private Date lastSentAt;
 
-    @Builder
-    public ChatRoomListResponseDto(Long chatRoomId, String chatRoomName, int totalMember,
-                                   int currentMember, String currentSong
-                                    ,String lastMessage, Date lastSentAt)
-    {
-        this.chatRoomId = chatRoomId;
-        this.chatRoomName = chatRoomName;
-        this.totalMember = totalMember;
-        this.currentMember = currentMember;
-        this.currentSong = currentSong;
-        this.lastMessage = lastMessage;
-        this.lastSentAt = lastSentAt;
+    public ChatRoomListResponseDto(ChatRoom chatRoom){
+        this.chatRoomId = chatRoom.getId();
+        this.chatRoomName = chatRoom.getName();
+        this.totalMember = chatRoom.getTotalMember();
+        this.currentMember = chatRoom.getCurrentMember();
     }
+//    @Builder
+//    public ChatRoomListResponseDto(Long chatRoomId, String chatRoomName, int totalMember,
+//                                   int currentMember, String currentSong
+//                                    ,String lastMessage, Date lastSentAt)
+//    {
+//        this.chatRoomId = chatRoomId;
+//        this.chatRoomName = chatRoomName;
+//        this.totalMember = totalMember;
+//        this.currentMember = currentMember;
+//        this.currentSong = currentSong;
+//        this.lastMessage = lastMessage;
+//        this.lastSentAt = lastSentAt;
+//    }
 }
