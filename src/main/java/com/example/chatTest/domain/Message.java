@@ -24,4 +24,12 @@ public class Message extends BaseTimeEntity{
     private String content;
 
     private MessageType messageType;
+
+    @Builder
+    public Message(String content, UserChatRoom userChatRoom, MessageType messageType){
+        this.content = content;
+        this.userChatRoom = userChatRoom;
+        this.messageType = messageType;
+        userChatRoom.getMessages().add(this);
+    }
 }
