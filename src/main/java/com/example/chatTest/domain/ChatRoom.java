@@ -18,14 +18,13 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class ChatRoom {
+public class ChatRoom extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
     @Column(name = "chatRoom_id")
     private Long id;
 
-    /* currentSong */
     private String name;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
@@ -33,29 +32,36 @@ public class ChatRoom {
 
     private String imageUrl;
 
-    // 현재 방의 총 인원 수
-    private int totalUser;
+    // 현재 방에 있는 사람 수
+    private int currentMember;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="song_id")
+    private Song song;
 
     @Builder
-    public ChatRoom(String name, int totalUser) {
+    public ChatRoom(String name) {
         this.name = name;
-        this.totalUser = totalUser;
+        this.currentMember = 1; // 생성될때 멤버 1명
     }
-
     /**
      * 비즈니스 메서드
      **/
-    // 방에 사람 들어오고
-    public void addUser() {
-        this.totalUser += 1;
+    public int getTotalMember(){
+        return this.getUserChatRooms().size();
     }
 
-    // 나가고
-    public void subUser() {
-        if (totalUser > 0) {
-            this.totalUser -= 1;
-        }
-    }
+//    // 방에 사람 들어오고
+//    public void addUser() {
+//        this.totalUser += 1;
+//    }
+//
+//    // 나가고
+//    public void subUser() {
+//        if (totalUser > 0) {
+//            this.totalUser -= 1;
+//        }
+//    }
 }
 
 
