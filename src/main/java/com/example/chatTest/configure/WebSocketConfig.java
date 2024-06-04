@@ -17,6 +17,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // STOMP 엔드포인트 설정: 유저가 웹소켓과 연결할 url 설정
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
+        // 실제 구현에서는 추가하기
+        // .withSockJS()
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*");
     }
 
