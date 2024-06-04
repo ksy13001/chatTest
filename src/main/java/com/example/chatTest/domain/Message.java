@@ -23,13 +23,20 @@ public class Message extends BaseTimeEntity{
 
     private String content;
 
+    @Enumerated(EnumType.STRING)
     private MessageType messageType;
+
+    private Long chatRoomId;
+
+    private Long userId;
 
     @Builder
     public Message(String content, UserChatRoom userChatRoom, MessageType messageType){
         this.content = content;
         this.userChatRoom = userChatRoom;
         this.messageType = messageType;
+        this.chatRoomId = userChatRoom.getChatRoom().getId();
+        this.userId = userChatRoom.getUser().getId();
         userChatRoom.getMessages().add(this);
     }
 }
