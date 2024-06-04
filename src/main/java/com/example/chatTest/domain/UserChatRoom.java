@@ -52,6 +52,11 @@ public class UserChatRoom{
         return userChatRoom;
     }
 
+    public static void deleteUserChatRoom(UserChatRoom userChatRoom, User user, ChatRoom chatRoom){
+        user.getUserChatRoom().remove(userChatRoom);
+        chatRoom.getUserChatRooms().remove(userChatRoom);
+    }
+
 
     /** 비즈니스 로직 **/
 
