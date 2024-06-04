@@ -39,6 +39,7 @@ public class CreateChatRoomRequestDto {
 
     public static class CreateChatRoomRequestDtoBuilder {
         public CreateChatRoomRequestDtoBuilder typeId(ChatRoomType chatRoomType, Long typeId) {
+            this.chatRoomType = chatRoomType;
             if (chatRoomType == ChatRoomType.SONG) {
                 this.songId(typeId);
             } else if (chatRoomType == ChatRoomType.ALBUM) {
