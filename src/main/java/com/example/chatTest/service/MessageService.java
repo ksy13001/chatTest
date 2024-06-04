@@ -4,7 +4,9 @@ import com.example.chatTest.domain.ChatRoom;
 import com.example.chatTest.domain.Message;
 import com.example.chatTest.domain.User;
 import com.example.chatTest.domain.UserChatRoom;
+import com.example.chatTest.dto.ChatRoomListResponseDto;
 import com.example.chatTest.dto.MessageDto;
+import com.example.chatTest.dto.MessageListDto;
 import com.example.chatTest.repository.ChatRoomRepository;
 import com.example.chatTest.repository.MessageRepository;
 import com.example.chatTest.repository.UserChatRoomRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -32,37 +35,20 @@ public class MessageService {
     public Long save(MessageDto messageDto){
 
         UserChatRoom userChatRoom = userChatRoomRepository
-                .findByUserIdAndChatRoomId(messageDto.getUserId(), messageDto.getRoomId());
+                .findByUserIdAndChatRoomId(messageDto.getUserId(), messageDto.getChatRoomId());
         return messageRepository.save(messageDto.toEntity(userChatRoom)).getId();
     }
 
     /**
      * 채팅방 채팅 조회
      * */
-//    public List<Message> findAll(Long chatRoomId){
-//
-//    }
+    @Transactional(readOnly = true)
+    public List<MessageListDto> findAllDesc(Long chatRoomId){
+        return messageRepository.findAllByChatRoomId(chatRoomId).stream()
+                .map(MessageListDto::new)
+                .collect(Collectors.toList());
+    }
 
-//    public Message sendMessage(Long userId, Long chatRoomId, String content){
-//        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("유저가 존재하지 않습니다. id="
-//                + userId));
-//        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(()->new IllegalArgumentException("채팅방이 존재하지 않습니다. id="
-//                + chatRoomId));
-//        UserChatRoom userChatRoom = UserChatRoom.setUserChatRoom(user, chatRoom);
-//        Message message = Message.builder()
-//                .content(content)
-//                .userChatRoom(userChatRoom)
-//                .build();
-//
-//        return messageRepository.save(message);
-//    }
-//
-//    public Message setMessage(MessageDto messageDto, User user, ChatRoom chatRoom){
-//        UserChatRoom userChatRoom = UserChatRoom.setUserChatRoom(user, chatRoom);
-//        return Message.builder()
-//                .content(messageDto.getContent())
-//                .userChatRoom(userChatRoom)
-//                .build();
-//    }
+
 
 }
