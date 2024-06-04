@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,59 +43,23 @@ public class ChatRoomApiController {
         return new Result(chatRoomService.findAllDesc());
     }
 
-    /**
-     * 채팅방 채팅 조회
-     * */
-    @GetMapping("/api/chat/{chatRoomId}")
-    public void messages(){
 
+    /**
+     * 채팅방 상세 조회
+     * */
+    @GetMapping("/api/chat/chatroom/{chatRoomId}")
+    public ChatRoomDetailDto findChatRoomDetail(@PathVariable(name = "chatRoomId")Long chatRoomId){
+        return chatRoomService.findChatRoomDetail(chatRoomId);
     }
 
-
     /**
-     * 유저 채팅방 입장
+     * 채팅방 찾기
      * */
 
-//    @GetMapping("/api/chat/chatroom")
-//    public Result chatRooms(){
-//        List<ChatRoom> chatRooms = chatRoomService.findAll();
-//        List<ChatRoomsDto> collection = chatRooms.stream()
-//                                        .map(m->ChatRoomsDto.builder()
-//                                        .name(m.getName())
-//                                        .build())
-//                                        .toList();
-//        return new Result(collection);
-//    }
-//
-//    @GetMapping("/api/v1/chat/users")
-//    public Result chatRoomUsers(){
-//        List<ChatRoom> chatRooms = chatRoomService.findAll();
-//        List<ChatRoomsDto> collection = chatRooms.stream()
-//                .map(m->ChatRoomsDto.builder()
-//                        .name(m.getName())
-//                        .build())
-//                .toList();
-//        return new Result(collection);
-//    }
-
-//
-//    // 유저 입장
-//    @PostMapping ("/api/v1/chat/{chatRoomId}")
-//    public Result enter(@PathVariable(name="chatRoomId") Long chatRoomId, @RequestParam("userId") Long userId ){
-//        chatRoomService.enter(chatRoomId, userId);
-//        ChatRoom chatRoom = chatRoomService.findById(chatRoomId);
-//        List<ChatRoomListResponseDto> userList = chatRoom.getUserChatRooms().stream()
-//                                    .map(m-> ChatRoomListResponseDto.builder()
-//                                    .name(m.getUser().getName())
-//                                    .build()).toList();
-//        // 현재 방의 User name 리스트 반환
-//        return new Result(userList);
-//    }
 
     @Data
     @AllArgsConstructor
     static class Result<T>{
         private T data;
     }
-//
 }
