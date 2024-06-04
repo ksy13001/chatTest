@@ -2,8 +2,10 @@ package com.example.chatTest.service;
 
 import com.example.chatTest.domain.User;
 import com.example.chatTest.domain.UserChatRoom;
+import com.example.chatTest.dto.ChatRoomDetailDto;
 import com.example.chatTest.dto.ChatRoomListResponseDto;
 import com.example.chatTest.dto.CreateChatRoomRequestDto;
+import com.example.chatTest.dto.JoinChatRoomRequestDto;
 import com.example.chatTest.repository.ChatRoomRepository;
 import com.example.chatTest.repository.UserChatRoomRepository;
 import com.example.chatTest.repository.UserRepository;
@@ -34,11 +36,11 @@ public class ChatRoomService {
     /**
      * 채팅방 생성
      * */
-    public Long create(CreateChatRoomRequestDto createChatRoomRequestDto){
-        ChatRoom chatRoom = chatRoomRepository.save(createChatRoomRequestDto.toEntity());
+    public Long create(CreateChatRoomRequestDto request){
+        ChatRoom chatRoom = chatRoomRepository.save(request.toEntity());
 
         // 채팅방 생성유저
-        Long userId = createChatRoomRequestDto.getUserId();
+        Long userId = request.getUserId();
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new IllegalArgumentException("유저가 존재하지 않습니다. id=" + userId));
         UserChatRoom.setUserChatRoom(user, chatRoom);
@@ -58,63 +60,70 @@ public class ChatRoomService {
     }
 
     /**
-     * 채팅방 입장
+     * 채팅방 조회(테스트용)
      * */
-    public void joinChatRoom(){
+    @Transactional(readOnly = true)
+    public ChatRoom findById(Long chatRoomId){
+        return chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(()->new IllegalArgumentException("채팅방이 없음 id:"+chatRoomId));
+    }
 
+    /**
+     * 채팅방 상세 조회
+     * */
+    @Transactional(readOnly = true)
+    public ChatRoomDetailDto findChatRoomDetail(Long chatRoomId){
+        ChatRoom findChatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(()->new IllegalArgumentException("채팅방이 없음 id:"+chatRoomId));
+
+        return new ChatRoomDetailDto(findChatRoom);
+    }
+
+    /**
+     *  유저 채팅방 삭제
+     * */
+    public void deleteChatRoom(Long chatRoomId){
+        chatRoomRepository.deleteById(chatRoomId);
     }
 
 
-//    @Transactional(readOnly = true)
-//    public ChatRoom findById(Long chatRoomId){
-//         return chatRoomRepository.findById(chatRoomId)
-//                 .orElseThrow(()->
-//                         new IllegalArgumentException("채팅방이 존재하지 않습니다. id=" + chatRoomId));
-//    }
+    /**
+     * 유저 채팅방 입장
+     * */
+    public void enterChatRoom(Long userId, Long chatRoomId){
+        // 유저, 채팅방 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new IllegalArgumentException("유저가 없습니다. id"+userId));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(()->new IllegalArgumentException("채팅방이 없습니다. id:"+chatRoomId));
 
-//
-//    // 입장 -> totalUser += 1, UserChatRoom 업데이트
-//    public Long enter(Long chatRoomId, Long userId){
-//        // 방찾기
-//        ChatRoom chatRoom = chatRoomRepository
-//                            .findById(chatRoomId)
-//                            .orElseThrow(()->
-//                                new IllegalArgumentException("채팅방이 존재하지 않습니다. id=" + chatRoomId));
-//        // 입장유저 찾기
-//        User user = userRepository.findById(userId)
-//                        .orElseThrow(()->
-//                        new IllegalArgumentException("유저가 존재하지 않습니다. id=" + userId));
-//
-//        chatRoom.addUser();
-//        UserChatRoom.setUserChatRoom(user, chatRoom);
-//        return chatRoom.getId();
-//    }
-//
-//    public Long leave(Long chatRoomId, Long userId){
-//        // 방찾기
-//        ChatRoom chatRoom = chatRoomRepository
-//                .findById(chatRoomId)
-//                .orElseThrow(()->
-//                        new IllegalArgumentException("채팅방이 존재하지 않습니다. id=" + chatRoomId));
-//        // 입장유저 찾기
-//        User user = userRepository
-//                .findById(userId)
-//                .orElseThrow(()->
-//                        new IllegalArgumentException("유저가 존재하지 않습니다. id=" + userId));
-//        chatRoom.subUser();
-////        UserChatRoom userChatRoom = userChatRoomRepository.findByUserIdAndChatRoomId(userId, chatRoomId);
-////        userChatRoomRepository.delete(userChatRoom);
-//
-//        return chatRoom.getId();
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public List<ChatRoom> findAll(){
-//        return chatRoomRepository.findAll();
-//    }
-//
-//    @PostConstruct
-//    public void chatOn(){
-//
-//    }
+        // masterId 얻고 이 유저의 현재 재생 시각 get
+        Long masterId = chatRoom.getMasterId();
+        // 현재 재생시각 적용
+
+        // UserChatRoom 에 유저 등록
+        UserChatRoom.setUserChatRoom(user, chatRoom);
+        // currentMember += 1
+        chatRoom.addUser();
+    }
+
+    /**
+     * 유저 채팅방 퇴장
+     * */
+    public void leaveChatRoom(Long userId, Long chatRoomId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new IllegalArgumentException("유저가 없습니다. id"+userId));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(()->new IllegalArgumentException("채팅방이 없습니다. id:"+chatRoomId));
+
+
+        UserChatRoom userChatRoom = userChatRoomRepository.findByUserIdAndChatRoomId(userId, chatRoomId);
+        // 중간 테이블 삭제
+        userChatRoomRepository.delete(userChatRoom);
+        // User, ChatRoom 에도 삭제 적용
+        UserChatRoom.deleteUserChatRoom(userChatRoom, user, chatRoom);
+        // current 1 감소
+        chatRoom.subUser();
+    }
+
 }
